@@ -1,5 +1,5 @@
 #ifndef MyAppVersion
-  #define MyAppVersion "1.0.48"
+  #define MyAppVersion "1.0.49"
 #endif
 
 #define MyAppName "FitBuds Turbo 控制"
@@ -35,7 +35,7 @@ RestartApplications=no
 Name: "chinesesimp"; MessagesFile: "ChineseSimplified.isl"
 
 [Files]
-Source: "..\artifacts\single-file\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\artifacts\portable\FitBudsControl\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion
 Source: "..\THIRD_PARTY_NOTICES.txt"; DestDir: "{app}"; Flags: ignoreversion
 

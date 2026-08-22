@@ -19,9 +19,11 @@ public partial class App : Application
     private EarbudsService? _earbuds;
     private LowBatteryNotificationService? _notifications;
     private DispatcherQueue? _dispatcherQueue;
+    private CancellationTokenSource? _updateCheckCts;
     private bool _exiting;
 
     public bool DeveloperModeUnlocked { get; private set; }
+    public UpdateCheckResult? LatestUpdateCheck { get; private set; }
 
     public App()
     {
@@ -65,6 +67,12 @@ public partial class App : Application
             !string.IsNullOrWhiteSpace(startupError))
         {
             System.Diagnostics.Debug.WriteLine(startupError);
+        }
+
+        if (_earbuds.Settings.AutoUpdateCheckEnabled)
+        {
+            _updateCheckCts = new CancellationTokenSource();
+            _ = CheckForUpdatesAsync(_updateCheckCts.Token);
         }
     }
 
@@ -213,6 +221,10 @@ public partial class App : Application
 
         try
         {
+            _updateCheckCts?.Cancel();
+            _updateCheckCts?.Dispose();
+            _updateCheckCts = null;
+
             if (_earbuds is not null)
             {
                 _earbuds.StateChanged -= Earbuds_StateOrSettingsChanged;
@@ -263,6 +275,31 @@ public partial class App : Application
     private void Notifications_FallbackNotificationRequested(string title, string message)
     {
         _trayIcon?.ShowNotification(title, message);
+    }
+
+    private async Task CheckForUpdatesAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            // Let the tray icon and initial device connection settle before using the network.
+            await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken).ConfigureAwait(false);
+            var result = await UpdateService.CheckAsync(cancellationToken).ConfigureAwait(false);
+            LatestUpdateCheck = result;
+            if (result.Succeeded && result.IsUpdateAvailable && result.LatestVersion is not null)
+            {
+                _dispatcherQueue?.TryEnqueue(() =>
+                    _trayIcon?.ShowNotification(
+                        "FitBuds Turbo 有新版本",
+                        $"版本 {result.LatestVersion} 已发布，请在设置中查看下载地址。"));
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+        catch (Exception exception)
+        {
+            System.Diagnostics.Debug.WriteLine($"FitBudsControl update check failed: {exception}");
+        }
     }
 
     private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)

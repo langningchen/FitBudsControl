@@ -462,6 +462,30 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <Border Style="{StaticResource CardBorderStyle}" HorizontalAlignment="Stretch">
+                            <Grid ColumnSpacing="16" RowSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="自动检查更新" Style="{StaticResource SectionHeaderStyle}" Margin="0" />
+                                    <TextBlock Text="启动应用时从 GitHub Release 检查新版本" Opacity="0.68" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <ToggleSwitch x:Name="AutoUpdateCheckToggle" Grid.Column="1" MinWidth="0" VerticalAlignment="Center" />
+                                <Button Grid.Column="2" Content="保存" VerticalAlignment="Center" Click="SaveUpdateSettings_Click" />
+                                <Button Grid.Column="3" Content="立即检查" VerticalAlignment="Center" Click="CheckForUpdates_Click" />
+                                <TextBlock x:Name="UpdateStatusText" Grid.Row="1" Grid.ColumnSpan="3" Text="尚未检查" Opacity="0.68" TextWrapping="Wrap" />
+                                <Button x:Name="OpenReleaseButton" Grid.Row="1" Grid.Column="3" Content="打开下载页面" Visibility="Collapsed" Click="OpenRelease_Click" />
+                            </Grid>
+                        </Border>
                     </StackPanel>
                 </ScrollViewer>
 

@@ -143,6 +143,7 @@ public sealed class AppSettings
 
     public bool StartWithWindows { get; set; }
     public bool AlwaysUseBlueTrayIcon { get; set; }
+    public bool AutoUpdateCheckEnabled { get; set; } = true;
 
     public bool AutoOpenPanelOnEvents { get; set; }
     public bool OpenPanelOnConnected { get; set; } = true;

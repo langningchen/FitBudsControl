@@ -58,5 +58,5 @@ if (-not (Test-Path $Installer)) {
 }
 
 Write-Host ''
-Write-Host 'Installer build complete:'
+Write-Host 'Multi-file installer build complete:'
 Write-Host "  $Installer"

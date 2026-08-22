@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using Windows.ApplicationModel.DataTransfer;
@@ -75,6 +76,7 @@ public sealed partial class SettingsWindow : Window
     private bool _legacyEditorLoading;
     private bool _legacyListening;
     private int _developerVersionTapCount;
+    private UpdateCheckResult? _lastUpdateCheck;
 
     public SettingsWindow(EarbudsService service)
     {
@@ -82,6 +84,11 @@ public sealed partial class SettingsWindow : Window
         var app = (App)Application.Current;
         DeveloperNavigationItem.Visibility = app.DeveloperModeUnlocked ? Visibility.Visible : Visibility.Collapsed;
         VersionTextBlock.Text = $"版本 {GetDisplayVersion()}";
+        if (app.LatestUpdateCheck is { Succeeded: true } updateCheck)
+        {
+            _lastUpdateCheck = updateCheck;
+            ApplyUpdateResult(updateCheck, showMessage: false);
+        }
         LiveTrafficListView.ItemsSource = _liveTrafficRows;
         ExtractedTrafficListView.ItemsSource = _extractedTrafficRows;
         LegacyResponseListView.ItemsSource = _legacyResponseRows;
@@ -218,6 +225,7 @@ public sealed partial class SettingsWindow : Window
 
             StartWithWindowsToggle.IsOn = settings.StartWithWindows;
             AlwaysBlueTrayIconToggle.IsOn = settings.AlwaysUseBlueTrayIcon;
+            AutoUpdateCheckToggle.IsOn = settings.AutoUpdateCheckEnabled;
             AutoOpenEventsToggle.IsOn = settings.AutoOpenPanelOnEvents;
             OpenOnConnectedCheckBox.IsChecked = settings.OpenPanelOnConnected;
             OpenOnDisconnectedCheckBox.IsChecked = settings.OpenPanelOnDisconnected;
@@ -842,6 +850,83 @@ public sealed partial class SettingsWindow : Window
         settings.AlwaysUseBlueTrayIcon = AlwaysBlueTrayIconToggle.IsOn;
         _service.SaveSettings(settings);
         ShowInfo(settings.AlwaysUseBlueTrayIcon ? "任务栏图标将始终保持蓝色" : "任务栏图标将继续显示设备状态", InfoBarSeverity.Success);
+    }
+
+    private void SaveUpdateSettings_Click(object sender, RoutedEventArgs e)
+    {
+        var settings = _service.Settings;
+        settings.AutoUpdateCheckEnabled = AutoUpdateCheckToggle.IsOn;
+        _service.SaveSettings(settings);
+        ShowInfo(settings.AutoUpdateCheckEnabled ? "自动检查更新已开启" : "自动检查更新已关闭", InfoBarSeverity.Success);
+    }
+
+    private async void CheckForUpdates_Click(object sender, RoutedEventArgs e)
+    {
+        SetBusy(true);
+        try
+        {
+            _lastUpdateCheck = await UpdateService.CheckAsync();
+            if (!_lastUpdateCheck.Succeeded)
+            {
+                UpdateStatusText.Text = $"检查失败：{_lastUpdateCheck.Error}";
+                OpenReleaseButton.Visibility = Visibility.Collapsed;
+                ShowInfo("检查更新失败，请稍后重试", InfoBarSeverity.Warning);
+                return;
+            }
+
+            ApplyUpdateResult(_lastUpdateCheck, showMessage: true);
+        }
+        finally
+        {
+            SetBusy(false);
+        }
+    }
+
+    private void OpenRelease_Click(object sender, RoutedEventArgs e)
+    {
+        var url = _lastUpdateCheck?.ReleaseUrl;
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch
+        {
+            ShowInfo("无法打开下载页面", InfoBarSeverity.Error);
+        }
+    }
+
+    private void ApplyUpdateResult(UpdateCheckResult result, bool showMessage)
+    {
+        if (!result.Succeeded)
+        {
+            UpdateStatusText.Text = $"检查失败：{result.Error}";
+            OpenReleaseButton.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        if (result.IsUpdateAvailable && result.LatestVersion is not null)
+        {
+            UpdateStatusText.Text = $"发现新版本 {result.LatestVersion}（当前 {result.CurrentVersion}）";
+            OpenReleaseButton.Visibility = Visibility.Visible;
+            if (showMessage)
+            {
+                ShowInfo("发现新版本，请打开下载页面", InfoBarSeverity.Informational);
+            }
+        }
+        else
+        {
+            UpdateStatusText.Text = $"已是最新版本 {result.CurrentVersion}";
+            OpenReleaseButton.Visibility = Visibility.Collapsed;
+            if (showMessage)
+            {
+                ShowInfo("当前已是最新版本", InfoBarSeverity.Success);
+            }
+        }
     }
 
     private void SaveAutoOpenEvents_Click(object sender, RoutedEventArgs e)
@@ -1608,7 +1693,7 @@ public sealed partial class SettingsWindow : Window
         var version = typeof(App).Assembly.GetName().Version;
         if (version is null)
         {
-            return "1.0.48";
+            return "1.0.49";
         }
 
         return version.Build >= 0
