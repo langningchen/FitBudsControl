@@ -2,6 +2,15 @@
 
 FitBuds Turbo 控制是一个运行在 Windows 上的开源托盘工具，用来管理 EDIFIER FitBuds Turbo 耳机。它通过 Bluetooth RFCOMM 连接设备，可查看左右耳与充电盒电量、切换降噪和音效模式，并修改提示音、触控、均衡器和定时设置。
 
+<table>
+  <tr>
+    <td width="24%"><img src="assets/image.png" width="100%" /></td>
+    <td width="24%"><img src="assets/image-1.png" width="100%" /></td>
+    <td width="24%"><img src="assets/image-2.png" width="100%" /></td>
+    <td width="24%"><img src="assets/image-3.png" width="100%" /></td>
+  </tr>
+</table>
+
 ## 功能
 
 - 托盘菜单快速查看状态和切换常用模式
