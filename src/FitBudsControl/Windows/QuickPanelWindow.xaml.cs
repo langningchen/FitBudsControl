@@ -86,6 +86,7 @@ public sealed partial class QuickPanelWindow : Window
         // on every tray invocation; Window.Activate() alone is not a reliable
         // re-show mechanism for an AppWindow that was previously hidden.
         _appWindow.Show(true);
+        Activate();
         _ = NativeMethods.SetForegroundWindow(hwnd);
 
         // 首次显示后，WinUI 才完成所有控件真正的布局。下一轮界面消息里
