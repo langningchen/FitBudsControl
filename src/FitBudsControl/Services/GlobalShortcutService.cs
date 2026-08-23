@@ -205,8 +205,8 @@ internal sealed class GlobalShortcutService : IDisposable
             _selectedIndex = GetNextIndex(action);
         }
 
-        var (title, labels) = GetDisplayChoices(action);
-        EnsureOverlay().ShowChoices(title, labels, _selectedIndex);
+        var labels = GetDisplayChoices(action);
+        EnsureOverlay().ShowChoices(labels, _selectedIndex);
     }
 
     private int GetNextIndex(ShortcutAction action)
@@ -223,10 +223,10 @@ internal sealed class GlobalShortcutService : IDisposable
     private static int GetCandidateCount(ShortcutAction action)
         => action == ShortcutAction.NoiseMode ? NoiseModes.Length : SceneModes.Length;
 
-    private static (string Title, IReadOnlyList<string> Labels) GetDisplayChoices(ShortcutAction action)
+    private static IReadOnlyList<string> GetDisplayChoices(ShortcutAction action)
         => action == ShortcutAction.NoiseMode
-            ? ("降噪模式", NoiseModes.Select(mode => FitBudsProtocol.NoiseLabels[mode]).ToArray())
-            : ("声音场景", SceneModes.Select(mode => FitBudsProtocol.SceneLabels[mode]).ToArray());
+            ? NoiseModes.Select(mode => FitBudsProtocol.NoiseLabels[mode]).ToArray()
+            : SceneModes.Select(mode => FitBudsProtocol.SceneLabels[mode]).ToArray();
 
     private async void CommitPreview()
     {

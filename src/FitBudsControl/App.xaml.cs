@@ -228,13 +228,17 @@ public partial class App : Application
         _settingsWindow.Activate();
     }
 
-    public async void ExitApplication()
+    public async void ExitApplication(bool ensureProcessExit = false)
     {
         if (_exiting)
         {
             return;
         }
         _exiting = true;
+        if (ensureProcessExit)
+        {
+            _ = ForceProcessExitAfterDelayAsync();
+        }
 
         try
         {
@@ -277,7 +281,14 @@ public partial class App : Application
 
             if (_earbuds is not null)
             {
-                await _earbuds.DisposeAsync();
+                try
+                {
+                    await _earbuds.DisposeAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+                }
+                catch (TimeoutException)
+                {
+                    System.Diagnostics.Debug.WriteLine("FitBudsControl shutdown timed out while disposing the Bluetooth service.");
+                }
                 _earbuds = null;
             }
             _dispatcherQueue = null;
@@ -288,6 +299,12 @@ public partial class App : Application
             _singleInstanceMutex = null;
             Current.Exit();
         }
+    }
+
+    private static async Task ForceProcessExitAfterDelayAsync()
+    {
+        await Task.Delay(TimeSpan.FromSeconds(8)).ConfigureAwait(false);
+        Environment.Exit(0);
     }
 
     private void Notifications_OpenRequested(object? sender, EventArgs e)

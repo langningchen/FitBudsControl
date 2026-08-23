@@ -33,6 +33,7 @@ public sealed partial class ShortcutOverlayWindow : Window
         }
 
         NativeMethods.EnableRoundedCorners(this);
+        NativeMethods.DisableWindowBorder(this);
         Closed += (_, _) =>
         {
             _noticeHideCts?.Cancel();
@@ -41,10 +42,9 @@ public sealed partial class ShortcutOverlayWindow : Window
         };
     }
 
-    public void ShowChoices(string title, IReadOnlyList<string> labels, int selectedIndex)
+    public void ShowChoices(IReadOnlyList<string> labels, int selectedIndex)
     {
         CancelNoticeHide();
-        TitleText.Text = $"{title} · 松开修饰键应用";
         ChoicesPanel.Children.Clear();
 
         var itemWidthDip = labels.Count > 4 ? 104 : 112;
@@ -69,7 +69,7 @@ public sealed partial class ShortcutOverlayWindow : Window
             ChoicesPanel.Children.Add(new Border
             {
                 Width = itemWidthDip,
-                Height = 38,
+                Height = 40,
                 Padding = new Thickness(8, 0, 8, 0),
                 CornerRadius = new CornerRadius(8),
                 Background = selected
@@ -83,23 +83,24 @@ public sealed partial class ShortcutOverlayWindow : Window
             });
         }
 
-        var widthDip = 28 + labels.Count * itemWidthDip + Math.Max(0, labels.Count - 1) * 8;
-        ShowAtTopCenter(widthDip, 82);
+        // Include extra room beyond the XAML padding for the invisible Win32 frame.
+        // Without it, the first/last choices and the lower edge are clipped.
+        var widthDip = 48 + labels.Count * itemWidthDip + Math.Max(0, labels.Count - 1) * 8;
+        ShowAtTopCenter(widthDip, 80);
     }
 
     public void ShowNotice(string title, string detail)
     {
         CancelNoticeHide();
-        TitleText.Text = title;
         ChoicesPanel.Children.Clear();
         ChoicesPanel.Children.Add(new TextBlock
         {
-            Text = detail,
+            Text = $"{title} · {detail}",
             FontSize = 14,
             Opacity = 0.82,
             HorizontalAlignment = HorizontalAlignment.Center,
         });
-        ShowAtTopCenter(300, 78);
+        ShowAtTopCenter(320, 72);
 
         _noticeHideCts = new CancellationTokenSource();
         _ = HideNoticeLaterAsync(_noticeHideCts.Token);

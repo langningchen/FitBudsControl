@@ -1088,7 +1088,7 @@ public sealed partial class SettingsWindow : Window
 
         if (installerStarted)
         {
-            ((App)Application.Current).ExitApplication();
+            ((App)Application.Current).ExitApplication(ensureProcessExit: true);
         }
     }
 

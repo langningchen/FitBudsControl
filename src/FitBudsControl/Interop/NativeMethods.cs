@@ -13,7 +13,9 @@ internal static class NativeMethods
     internal const int GwlpWndProc = -4;
     internal const int SwHide = 0;
     internal const int DwmwaWindowCornerPreference = 33;
+    internal const int DwmwaBorderColor = 34;
     internal const int DwmwcpRound = 2;
+    internal const int DwmColorNone = unchecked((int)0xFFFFFFFE);
 
     [StructLayout(LayoutKind.Sequential)]
     internal struct Point
@@ -181,6 +183,20 @@ internal static class NativeMethods
         catch
         {
             // Windows 10 or unsupported DWM: no-op.
+        }
+    }
+
+    internal static void DisableWindowBorder(Window window)
+    {
+        try
+        {
+            var hwnd = GetWindowHandle(window);
+            var color = DwmColorNone;
+            _ = DwmSetWindowAttribute(hwnd, DwmwaBorderColor, ref color, sizeof(int));
+        }
+        catch
+        {
+            // Unsupported DWM versions keep their default border.
         }
     }
 }

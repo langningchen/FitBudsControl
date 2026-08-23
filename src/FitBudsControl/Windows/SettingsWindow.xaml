@@ -416,8 +416,8 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="打开快捷面板" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="0" VerticalAlignment="Center">
-                                    <ToggleSwitch x:Name="OpenShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" Margin="0,0,16,0" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <ToggleSwitch x:Name="OpenShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" Margin="0,0,8,0" />
                                     <CheckBox x:Name="OpenShortcutControl" Content="Ctrl" MinWidth="0" Margin="0" />
                                     <CheckBox x:Name="OpenShortcutAlt" Content="Alt" MinWidth="0" Margin="0" />
                                     <CheckBox x:Name="OpenShortcutShift" Content="Shift" MinWidth="0" Margin="0" />
@@ -435,8 +435,8 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="切换降噪" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="0" VerticalAlignment="Center">
-                                    <ToggleSwitch x:Name="NoiseShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" Margin="0,0,16,0" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <ToggleSwitch x:Name="NoiseShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" Margin="0,0,8,0" />
                                     <CheckBox x:Name="NoiseShortcutControl" Content="Ctrl" MinWidth="0" Margin="0" />
                                     <CheckBox x:Name="NoiseShortcutAlt" Content="Alt" MinWidth="0" Margin="0" />
                                     <CheckBox x:Name="NoiseShortcutShift" Content="Shift" MinWidth="0" Margin="0" />
@@ -454,8 +454,8 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="声音场景" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="0" VerticalAlignment="Center">
-                                    <ToggleSwitch x:Name="SceneShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" Margin="0,0,16,0" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <ToggleSwitch x:Name="SceneShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" Margin="0,0,8,0" />
                                     <CheckBox x:Name="SceneShortcutControl" Content="Ctrl" MinWidth="0" Margin="0" />
                                     <CheckBox x:Name="SceneShortcutAlt" Content="Alt" MinWidth="0" Margin="0" />
                                     <CheckBox x:Name="SceneShortcutShift" Content="Shift" MinWidth="0" Margin="0" />
