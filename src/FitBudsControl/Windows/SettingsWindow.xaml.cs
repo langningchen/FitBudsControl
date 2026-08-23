@@ -1024,7 +1024,7 @@ public sealed partial class SettingsWindow : Window
             if (!_lastUpdateCheck.Succeeded)
             {
                 UpdateStatusText.Text = $"检查失败：{_lastUpdateCheck.Error}";
-                OpenReleaseButton.Visibility = Visibility.Collapsed;
+                InstallUpdateButton.Visibility = Visibility.Collapsed;
                 ShowInfo("检查更新失败，请稍后重试", InfoBarSeverity.Warning);
                 return;
             }
@@ -1037,21 +1037,58 @@ public sealed partial class SettingsWindow : Window
         }
     }
 
-    private void OpenRelease_Click(object sender, RoutedEventArgs e)
+    private async void DownloadAndInstall_Click(object sender, RoutedEventArgs e)
     {
-        var url = _lastUpdateCheck?.ReleaseUrl;
-        if (string.IsNullOrWhiteSpace(url))
+        if (_lastUpdateCheck is not { IsUpdateAvailable: true } update)
         {
             return;
         }
 
+        SetBusy(true);
+        InstallUpdateButton.IsEnabled = false;
+        UpdateDownloadProgressBar.Value = 0;
+        UpdateDownloadProgressBar.Visibility = Visibility.Visible;
+        var installerStarted = false;
         try
         {
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            var progress = new Progress<double>(value =>
+            {
+                var percent = Math.Clamp(value, 0, 100);
+                UpdateDownloadProgressBar.Value = percent;
+                UpdateStatusText.Text = $"正在下载版本 {update.LatestVersion}… {percent:0}%";
+            });
+            var installerPath = await UpdateService.DownloadInstallerAsync(update, progress);
+            UpdateStatusText.Text = "下载完成，正在启动安装…";
+
+            var process = Process.Start(new ProcessStartInfo(installerPath)
+            {
+                UseShellExecute = true,
+                Arguments = "/SP- /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS",
+            });
+            if (process is null)
+            {
+                throw new InvalidOperationException("无法启动安装程序");
+            }
+            installerStarted = true;
         }
-        catch
+        catch (Exception exception)
         {
-            ShowInfo("无法打开下载页面", InfoBarSeverity.Error);
+            UpdateStatusText.Text = $"下载安装失败：{CleanUserMessage(exception.Message)}";
+            ShowInfo("下载安装失败，请稍后重试", InfoBarSeverity.Error);
+        }
+        finally
+        {
+            if (!installerStarted)
+            {
+                UpdateDownloadProgressBar.Visibility = Visibility.Collapsed;
+                InstallUpdateButton.IsEnabled = true;
+                SetBusy(false);
+            }
+        }
+
+        if (installerStarted)
+        {
+            ((App)Application.Current).ExitApplication();
         }
     }
 
@@ -1060,23 +1097,28 @@ public sealed partial class SettingsWindow : Window
         if (!result.Succeeded)
         {
             UpdateStatusText.Text = $"检查失败：{result.Error}";
-            OpenReleaseButton.Visibility = Visibility.Collapsed;
+            InstallUpdateButton.Visibility = Visibility.Collapsed;
             return;
         }
 
         if (result.IsUpdateAvailable && result.LatestVersion is not null)
         {
-            UpdateStatusText.Text = $"发现新版本 {result.LatestVersion}（当前 {result.CurrentVersion}）";
-            OpenReleaseButton.Visibility = Visibility.Visible;
+            var installerReady = !string.IsNullOrWhiteSpace(result.InstallerDownloadUrl);
+            UpdateStatusText.Text = installerReady
+                ? $"发现新版本 {result.LatestVersion}（当前 {result.CurrentVersion}）"
+                : $"发现新版本 {result.LatestVersion}，安装包正在生成";
+            InstallUpdateButton.Visibility = installerReady ? Visibility.Visible : Visibility.Collapsed;
             if (showMessage)
             {
-                ShowInfo("发现新版本，请打开下载页面", InfoBarSeverity.Informational);
+                ShowInfo(
+                    installerReady ? "发现新版本，可以直接下载并安装" : "发现新版本，安装包正在生成",
+                    InfoBarSeverity.Informational);
             }
         }
         else
         {
             UpdateStatusText.Text = $"已是最新版本 {result.CurrentVersion}";
-            OpenReleaseButton.Visibility = Visibility.Collapsed;
+            InstallUpdateButton.Visibility = Visibility.Collapsed;
             if (showMessage)
             {
                 ShowInfo("当前已是最新版本", InfoBarSeverity.Success);

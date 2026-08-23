@@ -403,10 +403,7 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Spacing="4">
-                                    <TextBlock Text="全局快捷键" Style="{StaticResource SectionHeaderStyle}" Margin="0" />
-                                    <TextBlock Text="在其他应用中也可使用。切换时按住修饰键，反复按字母预览，松开任一修饰键后应用。" Opacity="0.68" TextWrapping="Wrap" />
-                                </StackPanel>
+                                <TextBlock Text="全局快捷键" Style="{StaticResource SectionHeaderStyle}" Margin="0" VerticalAlignment="Center" />
                                 <Button Grid.Column="1" Content="恢复默认" VerticalAlignment="Center" Click="ResetShortcuts_Click" />
                                 <Button Grid.Column="2" Content="保存" VerticalAlignment="Center" Click="SaveShortcuts_Click" />
                             </Grid>
@@ -418,17 +415,14 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Spacing="3" VerticalAlignment="Center">
-                                    <TextBlock Text="打开快捷面板" FontSize="15" FontWeight="SemiBold" />
-                                    <TextBlock Text="显示或隐藏任务栏快捷面板" Opacity="0.68" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                    <ToggleSwitch x:Name="OpenShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" />
-                                    <CheckBox x:Name="OpenShortcutControl" Content="Ctrl" />
-                                    <CheckBox x:Name="OpenShortcutAlt" Content="Alt" />
-                                    <CheckBox x:Name="OpenShortcutShift" Content="Shift" />
-                                    <CheckBox x:Name="OpenShortcutWindows" Content="Win" />
-                                    <TextBlock Text="+" VerticalAlignment="Center" Opacity="0.58" />
+                                <TextBlock Text="打开快捷面板" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="0" VerticalAlignment="Center">
+                                    <ToggleSwitch x:Name="OpenShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" Margin="0,0,16,0" />
+                                    <CheckBox x:Name="OpenShortcutControl" Content="Ctrl" MinWidth="0" Margin="0" />
+                                    <CheckBox x:Name="OpenShortcutAlt" Content="Alt" MinWidth="0" Margin="0" />
+                                    <CheckBox x:Name="OpenShortcutShift" Content="Shift" MinWidth="0" Margin="0" />
+                                    <CheckBox x:Name="OpenShortcutWindows" Content="Win" MinWidth="0" Margin="0" />
+                                    <TextBlock Text="+" VerticalAlignment="Center" Opacity="0.58" Margin="6,0" />
                                     <ComboBox x:Name="OpenShortcutKey" Width="72" />
                                 </StackPanel>
                             </Grid>
@@ -440,17 +434,14 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Spacing="3" VerticalAlignment="Center">
-                                    <TextBlock Text="切换降噪" FontSize="15" FontWeight="SemiBold" />
-                                    <TextBlock Text="循环预览六种降噪模式" Opacity="0.68" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                    <ToggleSwitch x:Name="NoiseShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" />
-                                    <CheckBox x:Name="NoiseShortcutControl" Content="Ctrl" />
-                                    <CheckBox x:Name="NoiseShortcutAlt" Content="Alt" />
-                                    <CheckBox x:Name="NoiseShortcutShift" Content="Shift" />
-                                    <CheckBox x:Name="NoiseShortcutWindows" Content="Win" />
-                                    <TextBlock Text="+" VerticalAlignment="Center" Opacity="0.58" />
+                                <TextBlock Text="切换降噪" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="0" VerticalAlignment="Center">
+                                    <ToggleSwitch x:Name="NoiseShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" Margin="0,0,16,0" />
+                                    <CheckBox x:Name="NoiseShortcutControl" Content="Ctrl" MinWidth="0" Margin="0" />
+                                    <CheckBox x:Name="NoiseShortcutAlt" Content="Alt" MinWidth="0" Margin="0" />
+                                    <CheckBox x:Name="NoiseShortcutShift" Content="Shift" MinWidth="0" Margin="0" />
+                                    <CheckBox x:Name="NoiseShortcutWindows" Content="Win" MinWidth="0" Margin="0" />
+                                    <TextBlock Text="+" VerticalAlignment="Center" Opacity="0.58" Margin="6,0" />
                                     <ComboBox x:Name="NoiseShortcutKey" Width="72" />
                                 </StackPanel>
                             </Grid>
@@ -462,28 +453,18 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Spacing="3" VerticalAlignment="Center">
-                                    <TextBlock Text="声音场景" FontSize="15" FontWeight="SemiBold" />
-                                    <TextBlock Text="循环预览音乐、游戏和空间音效" Opacity="0.68" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                    <ToggleSwitch x:Name="SceneShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" />
-                                    <CheckBox x:Name="SceneShortcutControl" Content="Ctrl" />
-                                    <CheckBox x:Name="SceneShortcutAlt" Content="Alt" />
-                                    <CheckBox x:Name="SceneShortcutShift" Content="Shift" />
-                                    <CheckBox x:Name="SceneShortcutWindows" Content="Win" />
-                                    <TextBlock Text="+" VerticalAlignment="Center" Opacity="0.58" />
+                                <TextBlock Text="声音场景" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="0" VerticalAlignment="Center">
+                                    <ToggleSwitch x:Name="SceneShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" Margin="0,0,16,0" />
+                                    <CheckBox x:Name="SceneShortcutControl" Content="Ctrl" MinWidth="0" Margin="0" />
+                                    <CheckBox x:Name="SceneShortcutAlt" Content="Alt" MinWidth="0" Margin="0" />
+                                    <CheckBox x:Name="SceneShortcutShift" Content="Shift" MinWidth="0" Margin="0" />
+                                    <CheckBox x:Name="SceneShortcutWindows" Content="Win" MinWidth="0" Margin="0" />
+                                    <TextBlock Text="+" VerticalAlignment="Center" Opacity="0.58" Margin="6,0" />
                                     <ComboBox x:Name="SceneShortcutKey" Width="72" />
                                 </StackPanel>
                             </Grid>
                         </Border>
-
-                        <InfoBar
-                            IsOpen="True"
-                            IsClosable="False"
-                            Severity="Informational"
-                            Title="默认快捷键"
-                            Message="Ctrl + Alt + Shift + F / N / S。三修饰键组合可避开 Windows、浏览器和常见编辑器快捷键。" />
                     </StackPanel>
                 </ScrollViewer>
 
@@ -573,6 +554,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <StackPanel Spacing="4">
                                     <TextBlock Text="自动检查更新" Style="{StaticResource SectionHeaderStyle}" Margin="0" />
@@ -582,7 +564,8 @@
                                 <Button Grid.Column="2" Content="保存" VerticalAlignment="Center" Click="SaveUpdateSettings_Click" />
                                 <Button Grid.Column="3" Content="立即检查" VerticalAlignment="Center" Click="CheckForUpdates_Click" />
                                 <TextBlock x:Name="UpdateStatusText" Grid.Row="1" Grid.ColumnSpan="3" Text="尚未检查" Opacity="0.68" TextWrapping="Wrap" />
-                                <Button x:Name="OpenReleaseButton" Grid.Row="1" Grid.Column="3" Content="打开下载页面" Visibility="Collapsed" Click="OpenRelease_Click" />
+                                <Button x:Name="InstallUpdateButton" Grid.Row="1" Grid.Column="3" Content="下载并安装" Visibility="Collapsed" Click="DownloadAndInstall_Click" />
+                                <ProgressBar x:Name="UpdateDownloadProgressBar" Grid.Row="2" Grid.ColumnSpan="4" Minimum="0" Maximum="100" Margin="0,4,0,0" Visibility="Collapsed" />
                             </Grid>
                         </Border>
                     </StackPanel>
@@ -919,6 +902,10 @@
                          HorizontalAlignment="Right"
                          VerticalAlignment="Bottom"
                          Margin="0,0,24,24"
+                         Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                         BorderThickness="1"
+                         Opacity="1"
                          IsOpen="False"
                          IsClosable="True" />
                 <ProgressRing x:Name="SettingsBusyRing" Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,18,26,0" IsActive="False" />

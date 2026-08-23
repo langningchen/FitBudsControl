@@ -10,10 +10,12 @@ public sealed record UpdateCheckResult(
     string CurrentVersion,
     string? LatestVersion,
     string? ReleaseUrl,
+    string? InstallerDownloadUrl,
+    string? InstallerFileName,
     string? Error)
 {
     public static UpdateCheckResult Failed(string currentVersion, string error)
-        => new(false, false, currentVersion, null, null, error);
+        => new(false, false, currentVersion, null, null, null, null, error);
 }
 
 public static class UpdateService
@@ -47,12 +49,18 @@ public static class UpdateService
             }
 
             var latestText = latest.ToString(3);
+            var installer = release.Assets.FirstOrDefault(asset =>
+                asset.Name is not null &&
+                asset.Name.StartsWith("FitBudsControl-Setup-", StringComparison.OrdinalIgnoreCase) &&
+                asset.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
             return new UpdateCheckResult(
                 true,
                 latest > current,
                 currentText,
                 latestText,
                 release.HtmlUrl,
+                installer?.BrowserDownloadUrl,
+                installer?.Name,
                 null);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -69,6 +77,93 @@ public static class UpdateService
     {
         var version = typeof(UpdateService).Assembly.GetName().Version;
         return version is null ? new Version(0, 0, 0) : new Version(version.Major, version.Minor, Math.Max(version.Build, 0));
+    }
+
+    public static async Task<string> DownloadInstallerAsync(
+        UpdateCheckResult update,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (!update.Succeeded || !update.IsUpdateAvailable ||
+            string.IsNullOrWhiteSpace(update.InstallerDownloadUrl) ||
+            string.IsNullOrWhiteSpace(update.InstallerFileName))
+        {
+            throw new InvalidOperationException("此版本暂时没有可下载的安装程序");
+        }
+
+        if (!Uri.TryCreate(update.InstallerDownloadUrl, UriKind.Absolute, out var downloadUri) ||
+            downloadUri.Scheme != Uri.UriSchemeHttps ||
+            !downloadUri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("安装程序下载地址无效");
+        }
+
+        var fileName = Path.GetFileName(update.InstallerFileName);
+        if (!fileName.StartsWith("FitBudsControl-Setup-", StringComparison.OrdinalIgnoreCase) ||
+            !fileName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("安装程序文件名无效");
+        }
+
+        var updateDirectory = Path.Combine(Path.GetTempPath(), "FitBudsControl", "Updates");
+        Directory.CreateDirectory(updateDirectory);
+        var destination = Path.Combine(updateDirectory, fileName);
+
+        try
+        {
+            using var response = await HttpClient.GetAsync(
+                downloadUri,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var length = response.Content.Headers.ContentLength;
+            await using var source = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            await using var target = new FileStream(
+                destination,
+                FileMode.Create,
+                FileAccess.Write,
+                FileShare.None,
+                bufferSize: 81920,
+                useAsync: true);
+
+            var buffer = new byte[81920];
+            long received = 0;
+            while (true)
+            {
+                var count = await source.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+                if (count == 0)
+                {
+                    break;
+                }
+
+                await target.WriteAsync(buffer.AsMemory(0, count), cancellationToken).ConfigureAwait(false);
+                received += count;
+                if (length is > 0)
+                {
+                    progress?.Report(received * 100.0 / length.Value);
+                }
+            }
+
+            if (received == 0)
+            {
+                throw new InvalidDataException("下载的安装程序为空");
+            }
+
+            progress?.Report(100);
+            return destination;
+        }
+        catch
+        {
+            try
+            {
+                File.Delete(destination);
+            }
+            catch
+            {
+            }
+            throw;
+        }
     }
 
     private static Version? ParseVersion(string? tag)
@@ -108,5 +203,15 @@ public static class UpdateService
 
         public bool Draft { get; set; }
         public bool Prerelease { get; set; }
+
+        public List<GitHubAsset> Assets { get; set; } = [];
+    }
+
+    private sealed class GitHubAsset
+    {
+        public string? Name { get; set; }
+
+        [JsonPropertyName("browser_download_url")]
+        public string? BrowserDownloadUrl { get; set; }
     }
 }
