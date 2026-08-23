@@ -47,21 +47,21 @@ public sealed partial class ShortcutOverlayWindow : Window
         };
     }
 
-    public void ShowChoices(IReadOnlyList<string> labels, IReadOnlyList<string> icons, int selectedIndex)
+    public void ShowChoices(IReadOnlyList<string> labels, IReadOnlyList<string> iconResourceKeys, int selectedIndex)
     {
         CancelNoticeHide();
         ChoicesPanel.Visibility = Visibility.Visible;
-        ChoiceDivider.Visibility = Visibility.Visible;
         ChoicesPanel.Children.Clear();
         SelectedNameText.Text = labels[selectedIndex];
 
         for (var index = 0; index < labels.Count; index++)
         {
             var selected = index == selectedIndex;
-            var icon = new FontIcon
+            var icon = new PathIcon
             {
-                Glyph = icons[index],
-                FontSize = 21,
+                Data = (Geometry)Application.Current.Resources[iconResourceKeys[index]],
+                Width = 18,
+                Height = 18,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Foreground = new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 242, 242, 242)),
@@ -69,10 +69,10 @@ public sealed partial class ShortcutOverlayWindow : Window
 
             ChoicesPanel.Children.Add(new Border
             {
-                Width = 48,
-                Height = 44,
-                Padding = new Thickness(4),
-                CornerRadius = new CornerRadius(8),
+                Width = 40,
+                Height = 38,
+                Padding = new Thickness(2),
+                CornerRadius = new CornerRadius(7),
                 Background = selected
                     ? _accentBrush
                     : new SolidColorBrush(global::Windows.UI.Color.FromArgb(0, 0, 0, 0)),
@@ -80,8 +80,8 @@ public sealed partial class ShortcutOverlayWindow : Window
             });
         }
 
-        var widthDip = 24 + labels.Count * 48 + Math.Max(0, labels.Count - 1) * 8;
-        ShowAtTopCenter(widthDip, 92);
+        var widthDip = 16 + labels.Count * 40 + Math.Max(0, labels.Count - 1) * 6;
+        ShowAtTopCenter(widthDip, 86);
     }
 
     public void ShowNotice(string title, string detail)
@@ -89,7 +89,6 @@ public sealed partial class ShortcutOverlayWindow : Window
         CancelNoticeHide();
         ChoicesPanel.Children.Clear();
         ChoicesPanel.Visibility = Visibility.Collapsed;
-        ChoiceDivider.Visibility = Visibility.Collapsed;
         SelectedNameText.Text = $"{title} · {detail}";
         ShowAtTopCenter(290, 42);
 

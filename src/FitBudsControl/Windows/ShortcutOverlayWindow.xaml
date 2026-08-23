@@ -7,24 +7,18 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="1" />
-                <RowDefinition Height="30" />
+                <RowDefinition Height="28" />
             </Grid.RowDefinitions>
             <StackPanel
                 x:Name="ChoicesPanel"
-                Margin="8,7"
+                Margin="6,5"
                 Orientation="Horizontal"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Spacing="8" />
-            <Border
-                x:Name="ChoiceDivider"
-                Grid.Row="1"
-                Margin="10,0"
-                Background="#42FFFFFF" />
+                Spacing="6" />
             <Border
                 x:Name="DescriptionPanel"
-                Grid.Row="2"
+                Grid.Row="1"
                 Background="#FF2C2C2C"
                 CornerRadius="0,0,12,12">
                 <TextBlock
