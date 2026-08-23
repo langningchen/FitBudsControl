@@ -63,15 +63,15 @@ public sealed partial class QuickPanelWindow : Window
 
     private void InitializeModeIcons()
     {
-        DeepIcon.Data = ModeIconCatalog.GetGeometry("Deep");
-        ComfortIcon.Data = ModeIconCatalog.GetGeometry("Comfort");
-        WideIcon.Data = ModeIconCatalog.GetGeometry("Wide");
-        WindIcon.Data = ModeIconCatalog.GetGeometry("Wind");
-        AmbientIcon.Data = ModeIconCatalog.GetGeometry("Ambient");
-        OffIcon.Data = ModeIconCatalog.GetGeometry("Off");
-        MusicIcon.Data = ModeIconCatalog.GetGeometry("Music");
-        GameIcon.Data = ModeIconCatalog.GetGeometry("Game");
-        SpatialIcon.Data = ModeIconCatalog.GetGeometry("Spatial");
+        ModeIconCatalog.Apply(DeepIcon, "Deep");
+        ModeIconCatalog.Apply(ComfortIcon, "Comfort");
+        ModeIconCatalog.Apply(WideIcon, "Wide");
+        ModeIconCatalog.Apply(WindIcon, "Wind");
+        ModeIconCatalog.Apply(AmbientIcon, "Ambient");
+        ModeIconCatalog.Apply(OffIcon, "Off");
+        ModeIconCatalog.Apply(MusicIcon, "Music");
+        ModeIconCatalog.Apply(GameIcon, "Game");
+        ModeIconCatalog.Apply(SpatialIcon, "Spatial");
     }
 
     public bool IsVisible => _visible;

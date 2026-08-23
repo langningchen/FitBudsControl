@@ -59,13 +59,13 @@ public sealed partial class ShortcutOverlayWindow : Window
             var selected = index == selectedIndex;
             var icon = new PathIcon
             {
-                Data = ModeIconCatalog.GetGeometry(iconKeys[index]),
                 Width = 18,
                 Height = 18,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Foreground = new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 242, 242, 242)),
             };
+            ModeIconCatalog.Apply(icon, iconKeys[index]);
 
             ChoicesPanel.Children.Add(new Border
             {
