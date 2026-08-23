@@ -6,8 +6,6 @@ namespace FitBudsControl.Windows;
 
 internal static class ModeIconCatalog
 {
-    private static readonly Dictionary<string, Geometry> GeometryCache = new(StringComparer.Ordinal);
-
     private static readonly IReadOnlyDictionary<string, string> IconData =
         new Dictionary<string, string>(StringComparer.Ordinal)
     {
@@ -24,12 +22,6 @@ internal static class ModeIconCatalog
 
     public static void Apply(PathIcon icon, string key)
     {
-        if (GeometryCache.TryGetValue(key, out var geometry))
-        {
-            icon.Data = geometry;
-            return;
-        }
-
         if (!IconData.TryGetValue(key, out var data))
         {
             System.Diagnostics.Debug.WriteLine($"Unknown mode icon: {key}");
@@ -38,9 +30,9 @@ internal static class ModeIconCatalog
 
         try
         {
-            geometry = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), data);
-            GeometryCache[key] = geometry;
-            icon.Data = geometry;
+            // A Geometry instance cannot be safely attached to PathIcons in different
+            // windows, so convert the shared path data into a fresh instance each time.
+            icon.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), data);
         }
         catch (Exception exception)
         {
