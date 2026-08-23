@@ -48,7 +48,7 @@ public sealed partial class ShortcutOverlayWindow : Window
         CancelNoticeHide();
         ChoicesPanel.Children.Clear();
 
-        var itemWidthDip = labels.Count > 4 ? 104 : 112;
+        var itemWidthDip = labels.Count > 4 ? 96 : 104;
         for (var index = 0; index < labels.Count; index++)
         {
             var selected = index == selectedIndex;
@@ -60,30 +60,24 @@ public sealed partial class ShortcutOverlayWindow : Window
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 TextWrapping = TextWrapping.NoWrap,
+                Foreground = new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 242, 242, 242)),
             };
-
-            if (selected)
-            {
-                text.Foreground = new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 255, 255, 255));
-            }
 
             ChoicesPanel.Children.Add(new Border
             {
                 Width = itemWidthDip,
-                Height = 40,
-                Padding = new Thickness(8, 0, 8, 0),
-                CornerRadius = new CornerRadius(8),
+                Height = 36,
+                Padding = new Thickness(5, 0, 5, 0),
+                CornerRadius = new CornerRadius(7),
                 Background = selected
-                    ? new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 0, 120, 212))
-                    : new SolidColorBrush(global::Windows.UI.Color.FromArgb(18, 128, 128, 128)),
+                    ? new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 0, 103, 192))
+                    : new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 58, 58, 58)),
                 Child = text,
             });
         }
 
-        // Include extra room beyond the XAML padding for the invisible Win32 frame.
-        // Without it, the first/last choices and the lower edge are clipped.
-        var widthDip = 48 + labels.Count * itemWidthDip + Math.Max(0, labels.Count - 1) * 8;
-        ShowAtTopCenter(widthDip, 80);
+        var widthDip = 28 + labels.Count * itemWidthDip + Math.Max(0, labels.Count - 1) * 6;
+        ShowAtTopCenter(widthDip, 60);
     }
 
     public void ShowNotice(string title, string detail)
@@ -94,10 +88,10 @@ public sealed partial class ShortcutOverlayWindow : Window
         {
             Text = $"{title} · {detail}",
             FontSize = 14,
-            Opacity = 0.82,
+            Foreground = new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 242, 242, 242)),
             HorizontalAlignment = HorizontalAlignment.Center,
         });
-        ShowAtTopCenter(320, 72);
+        ShowAtTopCenter(290, 58);
 
         _noticeHideCts = new CancellationTokenSource();
         _ = HideNoticeLaterAsync(_noticeHideCts.Token);

@@ -59,7 +59,7 @@ internal sealed class TrayIcon : IDisposable
     private TrayIconState _state;
     private long _lastPrimaryInvokeTick;
     private long _lastSecondaryInvokeTick;
-    private string _tooltip = "FitBuds Turbo";
+    private string _tooltip = "FitBuds Turbo 控制";
 
     public TrayIcon(TrayIconState initialState = TrayIconState.Normal)
     {
@@ -99,8 +99,9 @@ internal sealed class TrayIcon : IDisposable
         if (_added)
         {
             var data = CreateData();
-            data.Flags = NifIcon | NifGuid;
+            data.Flags = NifIcon | NifTip | NifGuid | NifShowTip;
             data.IconHandle = _icon;
+            data.Tip = Truncate(_tooltip, 127);
             _ = Shell_NotifyIcon(NimModify, ref data);
         }
 
@@ -117,7 +118,7 @@ internal sealed class TrayIcon : IDisposable
             return;
         }
 
-        _tooltip = string.IsNullOrWhiteSpace(text) ? "FitBuds Turbo" : text;
+        _tooltip = string.IsNullOrWhiteSpace(text) ? "FitBuds Turbo 控制" : text;
         if (!_added)
         {
             return;
@@ -137,7 +138,8 @@ internal sealed class TrayIcon : IDisposable
         }
 
         var data = CreateData();
-        data.Flags = NifInfo | NifGuid;
+        data.Flags = NifInfo | NifTip | NifGuid | NifShowTip;
+        data.Tip = Truncate(_tooltip, 127);
         data.InfoTitle = Truncate(title, 63);
         data.Info = Truncate(message, 255);
         data.InfoFlags = NiifInfo;
@@ -217,6 +219,7 @@ internal sealed class TrayIcon : IDisposable
         {
             data.VersionOrTimeout = NotifyIconVersion4;
             _ = Shell_NotifyIcon(NimSetVersion, ref data);
+            UpdateTooltip(_tooltip);
         }
     }
 

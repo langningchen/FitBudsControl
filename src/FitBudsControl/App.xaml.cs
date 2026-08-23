@@ -62,7 +62,7 @@ public partial class App : Application
         _trayIcon = new TrayIcon(GetTrayIconState());
         _trayIcon.PrimaryInvoked += TrayIcon_PrimaryInvoked;
         _trayIcon.SecondaryInvoked += TrayIcon_SecondaryInvoked;
-        _trayIcon.UpdateTooltip("FitBuds Turbo");
+        _trayIcon.UpdateTooltip("FitBuds Turbo 控制");
 
         try
         {

@@ -5,14 +5,14 @@
 
     <Border
         x:Name="OverlayCard"
-        Padding="18,16"
-        CornerRadius="14"
-        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+        Padding="10,8"
+        CornerRadius="12"
+        Background="#F21F1F1F">
         <StackPanel
             x:Name="ChoicesPanel"
             Orientation="Horizontal"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Spacing="8" />
+            Spacing="6" />
     </Border>
 </Window>
