@@ -20,6 +20,9 @@
                 <NavigationViewItem Content="声音与触控" Tag="sound">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE767;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="快捷键" Tag="shortcuts">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE765;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="应用" Tag="application">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE713;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
@@ -385,6 +388,102 @@
                                     </Grid>
                                 </StackPanel>
                             </Border>
+                    </StackPanel>
+                </ScrollViewer>
+
+
+                <ScrollViewer x:Name="ShortcutsPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="28,22,34,34" Spacing="14">
+                        <TextBlock Text="快捷键" FontSize="28" FontWeight="SemiBold" />
+
+                        <Border Style="{StaticResource CardBorderStyle}" Margin="0,4,0,0" HorizontalAlignment="Stretch">
+                            <Grid ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="全局快捷键" Style="{StaticResource SectionHeaderStyle}" Margin="0" />
+                                    <TextBlock Text="在其他应用中也可使用。切换时按住修饰键，反复按字母预览，松开任一修饰键后应用。" Opacity="0.68" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <Button Grid.Column="1" Content="恢复默认" VerticalAlignment="Center" Click="ResetShortcuts_Click" />
+                                <Button Grid.Column="2" Content="保存" VerticalAlignment="Center" Click="SaveShortcuts_Click" />
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource CardBorderStyle}" HorizontalAlignment="Stretch">
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Spacing="3" VerticalAlignment="Center">
+                                    <TextBlock Text="打开快捷面板" FontSize="15" FontWeight="SemiBold" />
+                                    <TextBlock Text="显示或隐藏任务栏快捷面板" Opacity="0.68" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <ToggleSwitch x:Name="OpenShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" />
+                                    <CheckBox x:Name="OpenShortcutControl" Content="Ctrl" />
+                                    <CheckBox x:Name="OpenShortcutAlt" Content="Alt" />
+                                    <CheckBox x:Name="OpenShortcutShift" Content="Shift" />
+                                    <CheckBox x:Name="OpenShortcutWindows" Content="Win" />
+                                    <TextBlock Text="+" VerticalAlignment="Center" Opacity="0.58" />
+                                    <ComboBox x:Name="OpenShortcutKey" Width="72" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource CardBorderStyle}" HorizontalAlignment="Stretch">
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Spacing="3" VerticalAlignment="Center">
+                                    <TextBlock Text="切换降噪" FontSize="15" FontWeight="SemiBold" />
+                                    <TextBlock Text="循环预览六种降噪模式" Opacity="0.68" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <ToggleSwitch x:Name="NoiseShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" />
+                                    <CheckBox x:Name="NoiseShortcutControl" Content="Ctrl" />
+                                    <CheckBox x:Name="NoiseShortcutAlt" Content="Alt" />
+                                    <CheckBox x:Name="NoiseShortcutShift" Content="Shift" />
+                                    <CheckBox x:Name="NoiseShortcutWindows" Content="Win" />
+                                    <TextBlock Text="+" VerticalAlignment="Center" Opacity="0.58" />
+                                    <ComboBox x:Name="NoiseShortcutKey" Width="72" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource CardBorderStyle}" HorizontalAlignment="Stretch">
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Spacing="3" VerticalAlignment="Center">
+                                    <TextBlock Text="声音场景" FontSize="15" FontWeight="SemiBold" />
+                                    <TextBlock Text="循环预览音乐、游戏和空间音效" Opacity="0.68" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <ToggleSwitch x:Name="SceneShortcutEnabled" MinWidth="0" OnContent="启用" OffContent="关闭" />
+                                    <CheckBox x:Name="SceneShortcutControl" Content="Ctrl" />
+                                    <CheckBox x:Name="SceneShortcutAlt" Content="Alt" />
+                                    <CheckBox x:Name="SceneShortcutShift" Content="Shift" />
+                                    <CheckBox x:Name="SceneShortcutWindows" Content="Win" />
+                                    <TextBlock Text="+" VerticalAlignment="Center" Opacity="0.58" />
+                                    <ComboBox x:Name="SceneShortcutKey" Width="72" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <InfoBar
+                            IsOpen="True"
+                            IsClosable="False"
+                            Severity="Informational"
+                            Title="默认快捷键"
+                            Message="Ctrl + Alt + Shift + F / N / S。三修饰键组合可避开 Windows、浏览器和常见编辑器快捷键。" />
                     </StackPanel>
                 </ScrollViewer>
 

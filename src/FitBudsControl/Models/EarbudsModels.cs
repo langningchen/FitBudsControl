@@ -91,6 +91,24 @@ public sealed record OperationResult(bool Success, string Detail)
     public static OperationResult Fail(string detail) => new(false, detail);
 }
 
+[Flags]
+public enum ShortcutModifiers
+{
+    None = 0,
+    Control = 1,
+    Alt = 2,
+    Shift = 4,
+    Windows = 8,
+}
+
+public sealed class ShortcutBinding
+{
+    public bool Enabled { get; set; } = true;
+    public ShortcutModifiers Modifiers { get; set; } =
+        ShortcutModifiers.Control | ShortcutModifiers.Alt | ShortcutModifiers.Shift;
+    public int Key { get; set; }
+}
+
 public sealed class EarbudsState
 {
     public bool IsConnected { get; internal set; }
@@ -144,6 +162,12 @@ public sealed class AppSettings
     public bool StartWithWindows { get; set; }
     public bool AlwaysUseBlueTrayIcon { get; set; }
     public bool AutoUpdateCheckEnabled { get; set; } = true;
+
+    // Three modifiers keep the defaults away from Windows and common application
+    // shortcuts while still making the related commands easy to remember.
+    public ShortcutBinding OpenPanelShortcut { get; set; } = new() { Key = 0x46 }; // F
+    public ShortcutBinding NoiseModeShortcut { get; set; } = new() { Key = 0x4E }; // N
+    public ShortcutBinding SoundSceneShortcut { get; set; } = new() { Key = 0x53 }; // S
 
     public bool AutoOpenPanelOnEvents { get; set; }
     public bool OpenPanelOnConnected { get; set; } = true;

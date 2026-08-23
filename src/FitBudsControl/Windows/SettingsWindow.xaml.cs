@@ -201,6 +201,16 @@ public sealed partial class SettingsWindow : Window
             combo.DisplayMemberPath = nameof(TouchFunctionOption.Label);
             combo.ItemsSource = functions;
         }
+
+        var shortcutKeys = Enumerable.Range('A', 26)
+            .Select(key => new ShortcutKeyOption(key, ((char)key).ToString()))
+            .ToArray();
+        foreach (var combo in new[] { OpenShortcutKey, NoiseShortcutKey, SceneShortcutKey })
+        {
+            combo.DisplayMemberPath = nameof(ShortcutKeyOption.Label);
+            combo.SelectedValuePath = nameof(ShortcutKeyOption.Key);
+            combo.ItemsSource = shortcutKeys;
+        }
     }
 
     private void LoadSettingsIntoUi()
@@ -226,6 +236,30 @@ public sealed partial class SettingsWindow : Window
             StartWithWindowsToggle.IsOn = settings.StartWithWindows;
             AlwaysBlueTrayIconToggle.IsOn = settings.AlwaysUseBlueTrayIcon;
             AutoUpdateCheckToggle.IsOn = settings.AutoUpdateCheckEnabled;
+            LoadShortcutIntoUi(
+                settings.OpenPanelShortcut,
+                OpenShortcutEnabled,
+                OpenShortcutControl,
+                OpenShortcutAlt,
+                OpenShortcutShift,
+                OpenShortcutWindows,
+                OpenShortcutKey);
+            LoadShortcutIntoUi(
+                settings.NoiseModeShortcut,
+                NoiseShortcutEnabled,
+                NoiseShortcutControl,
+                NoiseShortcutAlt,
+                NoiseShortcutShift,
+                NoiseShortcutWindows,
+                NoiseShortcutKey);
+            LoadShortcutIntoUi(
+                settings.SoundSceneShortcut,
+                SceneShortcutEnabled,
+                SceneShortcutControl,
+                SceneShortcutAlt,
+                SceneShortcutShift,
+                SceneShortcutWindows,
+                SceneShortcutKey);
             AutoOpenEventsToggle.IsOn = settings.AutoOpenPanelOnEvents;
             OpenOnConnectedCheckBox.IsChecked = settings.OpenPanelOnConnected;
             OpenOnDisconnectedCheckBox.IsChecked = settings.OpenPanelOnDisconnected;
@@ -256,6 +290,7 @@ public sealed partial class SettingsWindow : Window
 
         DevicePanel.Visibility = tag == "device" ? Visibility.Visible : Visibility.Collapsed;
         SoundPanel.Visibility = tag == "sound" ? Visibility.Visible : Visibility.Collapsed;
+        ShortcutsPanel.Visibility = tag == "shortcuts" ? Visibility.Visible : Visibility.Collapsed;
         ApplicationPanel.Visibility = tag == "application" ? Visibility.Visible : Visibility.Collapsed;
         DeveloperPanel.Visibility = tag == "developer" ? Visibility.Visible : Visibility.Collapsed;
         AboutPanel.Visibility = tag == "about" ? Visibility.Visible : Visibility.Collapsed;
@@ -850,6 +885,126 @@ public sealed partial class SettingsWindow : Window
         settings.AlwaysUseBlueTrayIcon = AlwaysBlueTrayIconToggle.IsOn;
         _service.SaveSettings(settings);
         ShowInfo(settings.AlwaysUseBlueTrayIcon ? "任务栏图标将始终保持蓝色" : "任务栏图标将继续显示设备状态", InfoBarSeverity.Success);
+    }
+
+    private void SaveShortcuts_Click(object sender, RoutedEventArgs e)
+    {
+        if (!TryReadShortcut(
+                "打开快捷面板",
+                OpenShortcutEnabled,
+                OpenShortcutControl,
+                OpenShortcutAlt,
+                OpenShortcutShift,
+                OpenShortcutWindows,
+                OpenShortcutKey,
+                out var openPanel) ||
+            !TryReadShortcut(
+                "切换降噪",
+                NoiseShortcutEnabled,
+                NoiseShortcutControl,
+                NoiseShortcutAlt,
+                NoiseShortcutShift,
+                NoiseShortcutWindows,
+                NoiseShortcutKey,
+                out var noiseMode) ||
+            !TryReadShortcut(
+                "声音场景",
+                SceneShortcutEnabled,
+                SceneShortcutControl,
+                SceneShortcutAlt,
+                SceneShortcutShift,
+                SceneShortcutWindows,
+                SceneShortcutKey,
+                out var soundScene))
+        {
+            return;
+        }
+
+        var enabledBindings = new[] { openPanel, noiseMode, soundScene }
+            .Where(binding => binding.Enabled)
+            .ToArray();
+        if (enabledBindings
+            .GroupBy(binding => (binding.Modifiers, binding.Key))
+            .Any(group => group.Count() > 1))
+        {
+            ShowInfo("三个功能不能使用相同的快捷键", InfoBarSeverity.Error);
+            return;
+        }
+
+        var settings = _service.Settings;
+        settings.OpenPanelShortcut = openPanel;
+        settings.NoiseModeShortcut = noiseMode;
+        settings.SoundSceneShortcut = soundScene;
+        _service.SaveSettings(settings);
+        ShowInfo("全局快捷键已保存", InfoBarSeverity.Success);
+    }
+
+    private void ResetShortcuts_Click(object sender, RoutedEventArgs e)
+    {
+        var modifiers = ShortcutModifiers.Control | ShortcutModifiers.Alt | ShortcutModifiers.Shift;
+        LoadShortcutIntoUi(new ShortcutBinding { Modifiers = modifiers, Key = 'F' }, OpenShortcutEnabled, OpenShortcutControl, OpenShortcutAlt, OpenShortcutShift, OpenShortcutWindows, OpenShortcutKey);
+        LoadShortcutIntoUi(new ShortcutBinding { Modifiers = modifiers, Key = 'N' }, NoiseShortcutEnabled, NoiseShortcutControl, NoiseShortcutAlt, NoiseShortcutShift, NoiseShortcutWindows, NoiseShortcutKey);
+        LoadShortcutIntoUi(new ShortcutBinding { Modifiers = modifiers, Key = 'S' }, SceneShortcutEnabled, SceneShortcutControl, SceneShortcutAlt, SceneShortcutShift, SceneShortcutWindows, SceneShortcutKey);
+        ShowInfo("已恢复默认组合，点击保存后生效", InfoBarSeverity.Informational);
+    }
+
+    private bool TryReadShortcut(
+        string name,
+        ToggleSwitch enabledToggle,
+        CheckBox control,
+        CheckBox alt,
+        CheckBox shift,
+        CheckBox windows,
+        ComboBox keyCombo,
+        out ShortcutBinding binding)
+    {
+        var modifiers = ShortcutModifiers.None;
+        if (control.IsChecked == true) modifiers |= ShortcutModifiers.Control;
+        if (alt.IsChecked == true) modifiers |= ShortcutModifiers.Alt;
+        if (shift.IsChecked == true) modifiers |= ShortcutModifiers.Shift;
+        if (windows.IsChecked == true) modifiers |= ShortcutModifiers.Windows;
+
+        var key = keyCombo.SelectedValue is int selectedKey ? selectedKey : 0;
+        binding = new ShortcutBinding
+        {
+            Enabled = enabledToggle.IsOn,
+            Modifiers = modifiers,
+            Key = key,
+        };
+
+        if (!binding.Enabled)
+        {
+            return true;
+        }
+        if (modifiers == ShortcutModifiers.None)
+        {
+            ShowInfo($"{name}至少需要一个修饰键", InfoBarSeverity.Error);
+            return false;
+        }
+        if (key is < 'A' or > 'Z')
+        {
+            ShowInfo($"请为{name}选择一个字母", InfoBarSeverity.Error);
+            return false;
+        }
+        return true;
+    }
+
+    private static void LoadShortcutIntoUi(
+        ShortcutBinding? binding,
+        ToggleSwitch enabledToggle,
+        CheckBox control,
+        CheckBox alt,
+        CheckBox shift,
+        CheckBox windows,
+        ComboBox keyCombo)
+    {
+        binding ??= new ShortcutBinding { Enabled = false, Key = 'A' };
+        enabledToggle.IsOn = binding.Enabled;
+        control.IsChecked = binding.Modifiers.HasFlag(ShortcutModifiers.Control);
+        alt.IsChecked = binding.Modifiers.HasFlag(ShortcutModifiers.Alt);
+        shift.IsChecked = binding.Modifiers.HasFlag(ShortcutModifiers.Shift);
+        windows.IsChecked = binding.Modifiers.HasFlag(ShortcutModifiers.Windows);
+        keyCombo.SelectedValue = binding.Key;
     }
 
     private void SaveUpdateSettings_Click(object sender, RoutedEventArgs e)
@@ -1787,4 +1942,5 @@ public sealed partial class SettingsWindow : Window
 
     private sealed record SoundQualityOption(SoundQualityMode Value, string Label);
     private sealed record TouchFunctionOption(TouchFunction Value, string Label);
+    private sealed record ShortcutKeyOption(int Key, string Label);
 }

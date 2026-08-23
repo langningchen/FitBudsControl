@@ -18,6 +18,7 @@ public partial class App : Application
     private AppSettingsStore? _settingsStore;
     private EarbudsService? _earbuds;
     private LowBatteryNotificationService? _notifications;
+    private GlobalShortcutService? _globalShortcuts;
     private DispatcherQueue? _dispatcherQueue;
     private CancellationTokenSource? _updateCheckCts;
     private bool _exiting;
@@ -63,6 +64,16 @@ public partial class App : Application
         _trayIcon.SecondaryInvoked += TrayIcon_SecondaryInvoked;
         _trayIcon.UpdateTooltip("FitBuds Turbo");
 
+        try
+        {
+            _globalShortcuts = new GlobalShortcutService(_earbuds);
+            _globalShortcuts.OpenPanelRequested += GlobalShortcuts_OpenPanelRequested;
+        }
+        catch (Exception exception)
+        {
+            System.Diagnostics.Debug.WriteLine($"FitBudsControl global shortcuts unavailable: {exception}");
+        }
+
         if (!StartupService.TryApply(_earbuds.Settings.StartWithWindows, out var startupError) &&
             !string.IsNullOrWhiteSpace(startupError))
         {
@@ -102,6 +113,12 @@ public partial class App : Application
     }
 
     private void TrayIcon_PrimaryInvoked(object? sender, EventArgs e)
+        => ToggleQuickPanel();
+
+    private void GlobalShortcuts_OpenPanelRequested(object? sender, EventArgs e)
+        => ToggleQuickPanel();
+
+    private void ToggleQuickPanel()
     {
         if (_trayIcon is null || _earbuds is null)
         {
@@ -238,6 +255,13 @@ public partial class App : Application
                 _trayIcon.SecondaryInvoked -= TrayIcon_SecondaryInvoked;
                 _trayIcon.Dispose();
                 _trayIcon = null;
+            }
+
+            if (_globalShortcuts is not null)
+            {
+                _globalShortcuts.OpenPanelRequested -= GlobalShortcuts_OpenPanelRequested;
+                _globalShortcuts.Dispose();
+                _globalShortcuts = null;
             }
 
             _settingsWindow?.Close();
