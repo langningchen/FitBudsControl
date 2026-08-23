@@ -11,12 +11,16 @@ public sealed partial class ShortcutOverlayWindow : Window
     private const int TopMarginDip = 18;
     private readonly AppWindow _appWindow;
     private readonly nint _hwnd;
+    private readonly Brush _accentBrush;
     private CancellationTokenSource? _noticeHideCts;
     private bool _visible;
 
     public ShortcutOverlayWindow()
     {
         InitializeComponent();
+        _accentBrush = new SolidColorBrush(
+            new global::Windows.UI.ViewManagement.UISettings().GetColorValue(
+                global::Windows.UI.ViewManagement.UIColorType.Accent));
         Title = "FitBuds Turbo 快捷切换";
         SystemBackdrop = new DesktopAcrylicBackdrop();
         _hwnd = NativeMethods.GetWindowHandle(this);
@@ -43,55 +47,51 @@ public sealed partial class ShortcutOverlayWindow : Window
         };
     }
 
-    public void ShowChoices(IReadOnlyList<string> labels, int selectedIndex)
+    public void ShowChoices(IReadOnlyList<string> labels, IReadOnlyList<string> icons, int selectedIndex)
     {
         CancelNoticeHide();
+        ChoicesPanel.Visibility = Visibility.Visible;
+        ChoiceDivider.Visibility = Visibility.Visible;
         ChoicesPanel.Children.Clear();
+        SelectedNameText.Text = labels[selectedIndex];
 
-        var itemWidthDip = labels.Count > 4 ? 96 : 104;
         for (var index = 0; index < labels.Count; index++)
         {
             var selected = index == selectedIndex;
-            var text = new TextBlock
+            var icon = new FontIcon
             {
-                Text = labels[index],
-                FontSize = 14,
-                FontWeight = selected ? Microsoft.UI.Text.FontWeights.SemiBold : Microsoft.UI.Text.FontWeights.Normal,
+                Glyph = icons[index],
+                FontSize = 21,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
-                TextWrapping = TextWrapping.NoWrap,
                 Foreground = new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 242, 242, 242)),
             };
 
             ChoicesPanel.Children.Add(new Border
             {
-                Width = itemWidthDip,
-                Height = 36,
-                Padding = new Thickness(5, 0, 5, 0),
-                CornerRadius = new CornerRadius(7),
+                Width = 48,
+                Height = 44,
+                Padding = new Thickness(4),
+                CornerRadius = new CornerRadius(8),
                 Background = selected
-                    ? new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 0, 103, 192))
-                    : new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 58, 58, 58)),
-                Child = text,
+                    ? _accentBrush
+                    : new SolidColorBrush(global::Windows.UI.Color.FromArgb(0, 0, 0, 0)),
+                Child = icon,
             });
         }
 
-        var widthDip = 28 + labels.Count * itemWidthDip + Math.Max(0, labels.Count - 1) * 6;
-        ShowAtTopCenter(widthDip, 60);
+        var widthDip = 24 + labels.Count * 48 + Math.Max(0, labels.Count - 1) * 8;
+        ShowAtTopCenter(widthDip, 92);
     }
 
     public void ShowNotice(string title, string detail)
     {
         CancelNoticeHide();
         ChoicesPanel.Children.Clear();
-        ChoicesPanel.Children.Add(new TextBlock
-        {
-            Text = $"{title} · {detail}",
-            FontSize = 14,
-            Foreground = new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 242, 242, 242)),
-            HorizontalAlignment = HorizontalAlignment.Center,
-        });
-        ShowAtTopCenter(290, 58);
+        ChoicesPanel.Visibility = Visibility.Collapsed;
+        ChoiceDivider.Visibility = Visibility.Collapsed;
+        SelectedNameText.Text = $"{title} · {detail}";
+        ShowAtTopCenter(290, 42);
 
         _noticeHideCts = new CancellationTokenSource();
         _ = HideNoticeLaterAsync(_noticeHideCts.Token);

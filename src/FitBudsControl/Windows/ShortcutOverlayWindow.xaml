@@ -3,16 +3,37 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Border
-        x:Name="OverlayCard"
-        Padding="10,8"
-        CornerRadius="12"
-        Background="#F21F1F1F">
-        <StackPanel
-            x:Name="ChoicesPanel"
-            Orientation="Horizontal"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Spacing="6" />
+    <Border x:Name="OverlayCard" CornerRadius="12" Background="#F21F1F1F">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="1" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <StackPanel
+                x:Name="ChoicesPanel"
+                Margin="8,7"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="8" />
+            <Border
+                x:Name="ChoiceDivider"
+                Grid.Row="1"
+                Margin="10,0"
+                Background="#42FFFFFF" />
+            <Border
+                x:Name="DescriptionPanel"
+                Grid.Row="2"
+                Background="#FF2C2C2C"
+                CornerRadius="0,0,12,12">
+                <TextBlock
+                    x:Name="SelectedNameText"
+                    FontSize="12"
+                    Foreground="#DDF5F5F5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+            </Border>
+        </Grid>
     </Border>
 </Window>

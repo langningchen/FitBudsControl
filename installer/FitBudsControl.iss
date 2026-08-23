@@ -43,4 +43,5 @@ Source: "..\THIRD_PARTY_NOTICES.txt"; DestDir: "{app}"; Flags: ignoreversion
 Name: "{autoprograms}\FitBuds Turbo 控制"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
 
 [Run]
+Filename: "{app}\{#MyAppExeName}"; Flags: nowait runasoriginaluser; Check: WizardSilent
 Filename: "{app}\{#MyAppExeName}"; Description: "启动 FitBuds Turbo 控制"; Flags: nowait postinstall skipifsilent runasoriginaluser
