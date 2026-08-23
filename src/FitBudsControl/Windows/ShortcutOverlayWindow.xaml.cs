@@ -63,7 +63,7 @@ public sealed partial class ShortcutOverlayWindow : Window
 
             if (selected)
             {
-                text.Foreground = new SolidColorBrush(global::Windows.UI.Colors.White);
+                text.Foreground = new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 255, 255, 255));
             }
 
             ChoicesPanel.Children.Add(new Border
