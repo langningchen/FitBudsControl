@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FitBudsControl.Services;
 
@@ -99,8 +100,12 @@ public static class UpdateService
 
     private sealed class GitHubRelease
     {
+        [JsonPropertyName("tag_name")]
         public string? TagName { get; set; }
+
+        [JsonPropertyName("html_url")]
         public string? HtmlUrl { get; set; }
+
         public bool Draft { get; set; }
         public bool Prerelease { get; set; }
     }
