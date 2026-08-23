@@ -180,7 +180,7 @@
                     <ToggleButton x:Name="DeepButton" Tag="Deep" Click="NoiseButton_Click" Style="{StaticResource QuickTileButtonStyle}">
                         <Viewbox Width="30" Height="30">
 
-                            <PathIcon x:Name="DeepIcon" Width="24" Height="24" Data="{StaticResource DeepModeIconGeometry}" Foreground="#FFF3F3F3" />
+                            <PathIcon x:Name="DeepIcon" Width="24" Height="24" Foreground="#FFF3F3F3" />
 
                         </Viewbox>
                     </ToggleButton>
@@ -190,7 +190,7 @@
                     <ToggleButton x:Name="ComfortButton" Tag="Comfort" Click="NoiseButton_Click" Style="{StaticResource QuickTileButtonStyle}">
                         <Viewbox Width="30" Height="30">
 
-                            <PathIcon x:Name="ComfortIcon" Width="24" Height="24" Data="{StaticResource ComfortModeIconGeometry}" Foreground="#FFF3F3F3" />
+                            <PathIcon x:Name="ComfortIcon" Width="24" Height="24" Foreground="#FFF3F3F3" />
 
                         </Viewbox>
                     </ToggleButton>
@@ -200,7 +200,7 @@
                     <ToggleButton x:Name="AmbientButton" Tag="Ambient" Click="NoiseButton_Click" Style="{StaticResource QuickTileButtonStyle}">
                         <Viewbox Width="30" Height="30">
 
-                            <PathIcon x:Name="AmbientIcon" Width="24" Height="24" Data="{StaticResource AmbientModeIconGeometry}" Foreground="#FFF3F3F3" />
+                            <PathIcon x:Name="AmbientIcon" Width="24" Height="24" Foreground="#FFF3F3F3" />
 
                         </Viewbox>
                     </ToggleButton>
@@ -210,7 +210,7 @@
                     <ToggleButton x:Name="WideButton" Tag="Wide" Click="NoiseButton_Click" Style="{StaticResource QuickTileButtonStyle}">
                         <Viewbox Width="30" Height="30">
 
-                            <PathIcon x:Name="WideIcon" Width="24" Height="24" Data="{StaticResource WideModeIconGeometry}" Foreground="#FFF3F3F3" />
+                            <PathIcon x:Name="WideIcon" Width="24" Height="24" Foreground="#FFF3F3F3" />
 
                         </Viewbox>
                     </ToggleButton>
@@ -220,7 +220,7 @@
                     <ToggleButton x:Name="WindButton" Tag="Wind" Click="NoiseButton_Click" Style="{StaticResource QuickTileButtonStyle}">
                         <Viewbox Width="30" Height="30">
 
-                            <PathIcon x:Name="WindIcon" Width="24" Height="24" Data="{StaticResource WindModeIconGeometry}" Foreground="#FFF3F3F3" />
+                            <PathIcon x:Name="WindIcon" Width="24" Height="24" Foreground="#FFF3F3F3" />
 
                         </Viewbox>
                     </ToggleButton>
@@ -230,7 +230,7 @@
                     <ToggleButton x:Name="OffButton" Tag="Off" Click="NoiseButton_Click" Style="{StaticResource QuickTileButtonStyle}">
                         <Viewbox Width="30" Height="30">
 
-                            <PathIcon x:Name="OffIcon" Width="24" Height="24" Data="{StaticResource OffModeIconGeometry}" Foreground="#FFF3F3F3" />
+                            <PathIcon x:Name="OffIcon" Width="24" Height="24" Foreground="#FFF3F3F3" />
 
                         </Viewbox>
                     </ToggleButton>
@@ -268,7 +268,7 @@
                     <ToggleButton x:Name="MusicButton" Tag="Music" Click="SceneButton_Click" Style="{StaticResource QuickTileButtonStyle}">
                         <Viewbox Width="30" Height="30">
 
-                            <PathIcon x:Name="MusicIcon" Width="24" Height="24" Data="{StaticResource MusicModeIconGeometry}" Foreground="#FFF3F3F3" />
+                            <PathIcon x:Name="MusicIcon" Width="24" Height="24" Foreground="#FFF3F3F3" />
 
                         </Viewbox>
                     </ToggleButton>
@@ -278,7 +278,7 @@
                     <ToggleButton x:Name="GameButton" Tag="Game" Click="SceneButton_Click" Style="{StaticResource QuickTileButtonStyle}">
                         <Viewbox Width="30" Height="30">
 
-                            <PathIcon x:Name="GameIcon" Width="24" Height="24" Data="{StaticResource GameModeIconGeometry}" Foreground="#FFF3F3F3" />
+                            <PathIcon x:Name="GameIcon" Width="24" Height="24" Foreground="#FFF3F3F3" />
 
                         </Viewbox>
                     </ToggleButton>
@@ -288,7 +288,7 @@
                     <ToggleButton x:Name="SpatialButton" Tag="Spatial" Click="SceneButton_Click" Style="{StaticResource QuickTileButtonStyle}">
                         <Viewbox Width="30" Height="30">
 
-                            <PathIcon x:Name="SpatialIcon" Width="24" Height="24" Data="{StaticResource SpatialModeIconGeometry}" Foreground="#FFF3F3F3" />
+                            <PathIcon x:Name="SpatialIcon" Width="24" Height="24" Foreground="#FFF3F3F3" />
 
                         </Viewbox>
                     </ToggleButton>

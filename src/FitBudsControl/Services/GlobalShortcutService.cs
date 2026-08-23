@@ -46,21 +46,21 @@ internal sealed class GlobalShortcutService : IDisposable
         SceneMode.Spatial,
     ];
 
-    private static readonly string[] NoiseModeIconResourceKeys =
+    private static readonly string[] NoiseModeIconKeys =
     [
-        "DeepModeIconGeometry",
-        "ComfortModeIconGeometry",
-        "WideModeIconGeometry",
-        "WindModeIconGeometry",
-        "AmbientModeIconGeometry",
-        "OffModeIconGeometry",
+        "Deep",
+        "Comfort",
+        "Wide",
+        "Wind",
+        "Ambient",
+        "Off",
     ];
 
-    private static readonly string[] SceneModeIconResourceKeys =
+    private static readonly string[] SceneModeIconKeys =
     [
-        "MusicModeIconGeometry",
-        "GameModeIconGeometry",
-        "SpatialModeIconGeometry",
+        "Music",
+        "Game",
+        "Spatial",
     ];
 
     public GlobalShortcutService(EarbudsService earbuds)
@@ -242,8 +242,8 @@ internal sealed class GlobalShortcutService : IDisposable
 
     private static (IReadOnlyList<string> Labels, IReadOnlyList<string> Icons) GetDisplayChoices(ShortcutAction action)
         => action == ShortcutAction.NoiseMode
-            ? (NoiseModes.Select(mode => FitBudsProtocol.NoiseLabels[mode]).ToArray(), NoiseModeIconResourceKeys)
-            : (SceneModes.Select(mode => FitBudsProtocol.SceneLabels[mode]).ToArray(), SceneModeIconResourceKeys);
+            ? (NoiseModes.Select(mode => FitBudsProtocol.NoiseLabels[mode]).ToArray(), NoiseModeIconKeys)
+            : (SceneModes.Select(mode => FitBudsProtocol.SceneLabels[mode]).ToArray(), SceneModeIconKeys);
 
     private async void CommitPreview()
     {

@@ -31,6 +31,7 @@ public sealed partial class QuickPanelWindow : Window
     public QuickPanelWindow(EarbudsService service)
     {
         InitializeComponent();
+        InitializeModeIcons();
         _service = service;
         _service.StateChanged += Service_StateChanged;
 
@@ -58,6 +59,19 @@ public sealed partial class QuickPanelWindow : Window
             _service.StateChanged -= Service_StateChanged;
         };
         UpdateUi();
+    }
+
+    private void InitializeModeIcons()
+    {
+        DeepIcon.Data = ModeIconCatalog.GetGeometry("Deep");
+        ComfortIcon.Data = ModeIconCatalog.GetGeometry("Comfort");
+        WideIcon.Data = ModeIconCatalog.GetGeometry("Wide");
+        WindIcon.Data = ModeIconCatalog.GetGeometry("Wind");
+        AmbientIcon.Data = ModeIconCatalog.GetGeometry("Ambient");
+        OffIcon.Data = ModeIconCatalog.GetGeometry("Off");
+        MusicIcon.Data = ModeIconCatalog.GetGeometry("Music");
+        GameIcon.Data = ModeIconCatalog.GetGeometry("Game");
+        SpatialIcon.Data = ModeIconCatalog.GetGeometry("Spatial");
     }
 
     public bool IsVisible => _visible;

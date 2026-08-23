@@ -47,7 +47,7 @@ public sealed partial class ShortcutOverlayWindow : Window
         };
     }
 
-    public void ShowChoices(IReadOnlyList<string> labels, IReadOnlyList<string> iconResourceKeys, int selectedIndex)
+    public void ShowChoices(IReadOnlyList<string> labels, IReadOnlyList<string> iconKeys, int selectedIndex)
     {
         CancelNoticeHide();
         ChoicesPanel.Visibility = Visibility.Visible;
@@ -59,7 +59,7 @@ public sealed partial class ShortcutOverlayWindow : Window
             var selected = index == selectedIndex;
             var icon = new PathIcon
             {
-                Data = (Geometry)Application.Current.Resources[iconResourceKeys[index]],
+                Data = ModeIconCatalog.GetGeometry(iconKeys[index]),
                 Width = 18,
                 Height = 18,
                 HorizontalAlignment = HorizontalAlignment.Center,
