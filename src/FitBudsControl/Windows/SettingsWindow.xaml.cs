@@ -1063,7 +1063,10 @@ public sealed partial class SettingsWindow : Window
             var process = Process.Start(new ProcessStartInfo(installerPath)
             {
                 UseShellExecute = true,
-                Arguments = "/SP- /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS",
+                // /SILENT keeps installation automatic but still shows Inno Setup's
+                // progress window. /VERYSILENT made the app appear to exit without
+                // starting anything.
+                Arguments = "/SP- /SILENT /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS",
             });
             if (process is null)
             {

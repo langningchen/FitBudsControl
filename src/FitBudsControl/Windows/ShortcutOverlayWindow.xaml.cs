@@ -32,6 +32,7 @@ public sealed partial class ShortcutOverlayWindow : Window
             presenter.SetBorderAndTitleBar(false, false);
         }
 
+        NativeMethods.ConfigureNoActivatePopup(this);
         NativeMethods.EnableRoundedCorners(this);
         NativeMethods.DisableWindowBorder(this);
         Closed += (_, _) =>
@@ -75,10 +76,6 @@ public sealed partial class ShortcutOverlayWindow : Window
                 Background = selected
                     ? new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 0, 120, 212))
                     : new SolidColorBrush(global::Windows.UI.Color.FromArgb(18, 128, 128, 128)),
-                BorderBrush = selected
-                    ? new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 96, 205, 255))
-                    : new SolidColorBrush(global::Windows.UI.Color.FromArgb(32, 128, 128, 128)),
-                BorderThickness = new Thickness(1),
                 Child = text,
             });
         }
