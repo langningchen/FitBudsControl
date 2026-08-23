@@ -59,13 +59,19 @@ public sealed partial class ShortcutOverlayWindow : Window
             var selected = index == selectedIndex;
             var icon = new PathIcon
             {
-                Width = 18,
-                Height = 18,
+                Width = 24,
+                Height = 24,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Foreground = new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 242, 242, 242)),
             };
             ModeIconCatalog.Apply(icon, iconKeys[index]);
+            var iconViewbox = new Viewbox
+            {
+                Width = 18,
+                Height = 18,
+                Child = icon,
+            };
 
             ChoicesPanel.Children.Add(new Border
             {
@@ -76,7 +82,7 @@ public sealed partial class ShortcutOverlayWindow : Window
                 Background = selected
                     ? _accentBrush
                     : new SolidColorBrush(global::Windows.UI.Color.FromArgb(0, 0, 0, 0)),
-                Child = icon,
+                Child = iconViewbox,
             });
         }
 
