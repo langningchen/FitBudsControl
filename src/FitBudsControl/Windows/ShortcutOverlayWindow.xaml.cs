@@ -90,6 +90,46 @@ public sealed partial class ShortcutOverlayWindow : Window
         ShowAtTopCenter(widthDip, 86);
     }
 
+    public void ShowDisabledChoices(IReadOnlyList<string> iconKeys)
+    {
+        CancelNoticeHide();
+        ChoicesPanel.Visibility = Visibility.Visible;
+        ChoicesPanel.Children.Clear();
+
+        for (var index = 0; index < iconKeys.Count; index++)
+        {
+            var icon = new PathIcon
+            {
+                Width = 24,
+                Height = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Foreground = new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 242, 242, 242)),
+                Opacity = 0.4,
+            };
+            ModeIconCatalog.Apply(icon, iconKeys[index]);
+            var iconViewbox = new Viewbox
+            {
+                Width = 18,
+                Height = 18,
+                Child = icon,
+            };
+
+            ChoicesPanel.Children.Add(new Border
+            {
+                Width = 40,
+                Height = 38,
+                Padding = new Thickness(2),
+                CornerRadius = new CornerRadius(7),
+                Background = new SolidColorBrush(global::Windows.UI.Color.FromArgb(0, 0, 0, 0)),
+                Child = iconViewbox,
+            });
+        }
+
+        var widthDip = 16 + iconKeys.Count * 40 + Math.Max(0, iconKeys.Count - 1) * 6;
+        ShowAtTopCenter(widthDip, 86);
+    }
+
     public void ShowNotice(string title, string detail)
     {
         CancelNoticeHide();

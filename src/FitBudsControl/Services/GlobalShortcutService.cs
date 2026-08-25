@@ -22,6 +22,7 @@ internal sealed class GlobalShortcutService : IDisposable
     private ShortcutOverlayWindow? _overlay;
     private ShortcutAction? _activeAction;
     private ShortcutModifiers _activeModifiers;
+    private bool _disabledPreview;
     private int _selectedIndex;
     private bool _disposed;
 
@@ -167,7 +168,11 @@ internal sealed class GlobalShortcutService : IDisposable
         var suppress = _suppressedKeys.Remove(key);
 
         var releasedModifier = ModifierForKey(key);
-        if (_activeAction is not null && (_activeModifiers & releasedModifier) != 0)
+        if (_disabledPreview && (_activeModifiers & releasedModifier) != 0)
+        {
+            CancelPreview();
+        }
+        else if (_activeAction is not null && (_activeModifiers & releasedModifier) != 0)
         {
             CommitPreview();
         }
@@ -206,7 +211,9 @@ internal sealed class GlobalShortcutService : IDisposable
         if (!_earbuds.IsConnected)
         {
             CancelPreview();
-            EnsureOverlay().ShowNotice("耳机未连接", "请先连接 FitBuds Turbo");
+            _activeModifiers = modifiers;
+            _disabledPreview = true;
+            EnsureOverlay().ShowDisabledChoices(GetDisplayChoices(action).Icons);
             return;
         }
 
@@ -272,6 +279,7 @@ internal sealed class GlobalShortcutService : IDisposable
     {
         _activeAction = null;
         _activeModifiers = ShortcutModifiers.None;
+        _disabledPreview = false;
         _overlay?.HideOverlay();
     }
 
